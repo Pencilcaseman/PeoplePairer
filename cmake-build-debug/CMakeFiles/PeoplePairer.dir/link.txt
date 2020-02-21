@@ -1,0 +1,1 @@
+/usr/bin/cc -g  -Wl,--enable-auto-import CMakeFiles/PeoplePairer.dir/main.c.o  -o PeoplePairer.exe -Wl,--out-implib,libPeoplePairer.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
