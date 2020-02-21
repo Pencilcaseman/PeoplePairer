@@ -476,6 +476,10 @@ int main(int argumentCount, char **arguments) {
         printf("\t> Directory to file containing name of person and number\n");
         printf("\t> Directory to file containing number of person and options\n");
 
+        printf("Press enter to exit\n");
+        char *getInputNow = malloc(sizeof(char) * 1);
+        fgets(getInputNow, 1, stdin);
+
         return 1;
     } else {
         peopleCount = atoi(arguments[1]);
@@ -514,6 +518,10 @@ int main(int argumentCount, char **arguments) {
     printf("Locating testing: %i\n", findPersonInList(people, people[0]));
 
     int **communities = louvain(people);
+
+    printf("Press enter to exit\n");
+    char *getInputNow = malloc(sizeof(char) * 1);
+    fgets(getInputNow, 1, stdin);
 
     return 0;
 }
