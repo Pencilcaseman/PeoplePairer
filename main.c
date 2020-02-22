@@ -20,8 +20,6 @@ struct Person {
 
 struct Person findPersonFromNumber(struct Person *people, int number) {
     for (int i = 0; i < peopleCount; i++) {
-        // printf("Person: %s\n", people[i].name);
-        // printf("Number: %i\n", people[i].number);
         if (people[i].number == number) {
             return people[i];
         }
@@ -40,22 +38,22 @@ int findPersonInList(struct Person *people, struct Person person) {
             ret = false;
         }
 
-        if (people[i].number != person.number) {
+        if (people[i].number != person.number && ret) {
             ret = false;
         }
 
-        if (people[i].connectionCount != person.connectionCount) {
+        if (people[i].connectionCount != person.connectionCount && ret) {
             ret = false;
         }
 
-        for (int j = 0; j < person.connectionCount; j++) {
+        for (int j = 0; j < person.connectionCount; j++ && ret) {
             if (people[i].connections[j] != person.connections[j]) {
                 ret = false;
             }
         }
 
         for (int j = 0; j < 5; j++) {
-            if (people[i].preferences[j] != person.preferences[j]) {
+            if (people[i].preferences[j] != person.preferences[j] && ret) {
                 ret = false;
             }
         }
@@ -520,8 +518,8 @@ int main(int argumentCount, char **arguments) {
     int **communities = louvain(people);
 
     printf("Press enter to exit\n");
-    char *getInputNow = malloc(sizeof(char) * 1);
-    fgets(getInputNow, 1, stdin);
+    char *getInputNow = malloc(sizeof(char) * 5);
+    fgets(getInputNow, 5, stdin);
 
     return 0;
 }

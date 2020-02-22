@@ -19,7 +19,7 @@ def generateNames(count):
 
     return res
 
-names = generateNames(6 * 4)
+names = generateNames(200)
 
 def getOptions():
     count = len(names)
@@ -53,7 +53,7 @@ def printOptionInfo():
             print(", {}".format(res[i][j]), end="")
         print()
 
-def writeNameInfo(directory):
+def writeNameInfo(directory="../namesAndNumbers.csv"):
     file = open(directory, "w")
     
     count = len(names)
@@ -65,7 +65,7 @@ def writeNameInfo(directory):
 
     file.close()
 
-def writeOptionInfo(directory):
+def writeOptionInfo(directory="../numbersAndPreferences.csv"):
     file = open(directory, "w")
     
     count = len(names)
