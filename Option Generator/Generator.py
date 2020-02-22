@@ -19,7 +19,7 @@ def generateNames(count):
 
     return res
 
-names = generateNames(200)
+names = generateNames(500)
 
 def getOptions():
     count = len(names)
