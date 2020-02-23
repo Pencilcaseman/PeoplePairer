@@ -183,7 +183,7 @@ struct Person *ReadFileInput() {
             } else {
                 // Option did not put them down...
 
-                //*
+                /*
 
                 // Creates connections regardless of whether option put them down too
                 // Results in more densely connected node-map
@@ -204,7 +204,7 @@ struct Person *ReadFileInput() {
                 //######################################################################################
                 //######################################################################################
 
-                //*/
+                */
             }
         }
     }
