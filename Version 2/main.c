@@ -244,8 +244,6 @@ int connectionCount(struct Person *people, int label) {
         evaluated[i][1] = -1;
     }
 
-    //printf("Got to here => 1\n");
-
     for (int i = 0; i < peopleCount; i++) {
         if (people[i].label == label || label == -123) {
             for (int j = 0; j < people[i].connectionCount; j++) {
@@ -253,9 +251,8 @@ int connectionCount(struct Person *people, int label) {
                     //printf("Got to here => 2\n");
                     bool previouslyEvaluated = false;
                     for (int k = 0; k < evalCount; k++) {
-                        if (((evaluated[k][0] == i && evaluated[k][1] == people[i].connections[j]) ||
-                            (evaluated[k][0] == people[i].connections[j] && evaluated[k][1] == people[i].number)) &&
-                            !previouslyEvaluated) {
+                        if ((evaluated[k][0] == i && evaluated[k][1] == people[i].connections[j]) ||
+                            (evaluated[k][0] == people[i].connections[j] && evaluated[k][1] == i)) {
                             previouslyEvaluated = true;
                         }
                     }
@@ -266,6 +263,10 @@ int connectionCount(struct Person *people, int label) {
                         evaluated[evalCount][0] = i; //people[i].number;
                         //printf("Got to here => 4\n");
                         evaluated[evalCount][1] = people[i].connections[j];
+
+                        //printf("Found a connection between: %s <> %s\n", people[i].name,
+                               //people[people[i].connections[j]].name);
+
                         evalCount++;
 
                         //printf("Got to here => 5\n");
@@ -301,6 +302,10 @@ double calculateModularity(struct Person *people) {
             labels[labelCount] = personLabel;
             labelCount++;
         }
+    }
+
+    for (int i = 0; i < labelCount; i++) {
+        printf("Label %i: %i\n", i, labels[i]);
     }
 
     double res = 0;
@@ -496,6 +501,7 @@ int main(int argumentCount, char **arguments) {
 
     printf("Connection Testing: %i\n", people[0].connections[0]);
     printf("Total degree of nodes with label -1: %i\n", degreeOfNodes(people, -1));
+
     printf("Total number of connections: %i\n", connectionCount(people, -1));
 
     printf("Modularity of current partition arrangement: %f\n", calculateModularity(people));
