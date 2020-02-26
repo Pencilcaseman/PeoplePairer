@@ -81,12 +81,12 @@ struct Person *ReadFileInput() {
 
     // Read the people and number data
     for (int i = 0; i < peopleCount; i++) {
-        char *data = (char *) malloc(sizeof(char) * 500);
-        fgets(data, 500, peopleAndNumbers);
+        char *data = (char *) malloc(sizeof(char) * 100);
+        fgets(data, 100, peopleAndNumbers);
 
-        char *numb = (char *) malloc(sizeof(char) * 500);
+        char *numb = (char *) malloc(sizeof(char) * 100);
         int numbIndex = 0;
-        char *name = (char *) malloc(sizeof(char) * 500);
+        char *name = (char *) malloc(sizeof(char) * 100);
         bool getName = true;
         for (int j = 0; j < strlen(data); j++) {
             if (data[j] == ',') {
@@ -112,12 +112,12 @@ struct Person *ReadFileInput() {
 
     // Read the numbers and the options
     for (int i = 0; i < peopleCount; i++) {
-        char *data = (char *) malloc(sizeof(char) * 500);
-        fgets(data, 500, numbersAndPreferences);
+        char *data = (char *) malloc(sizeof(char) * 100);
+        fgets(data, 100, numbersAndPreferences);
 
         int number = 0;
         int *preferences = (int *) malloc(sizeof(int) * 5);
-        char *current = (char *) malloc(sizeof(char) * 500);
+        char *current = (char *) malloc(sizeof(char) * 100);
         int currentIndex = 0;
         int option = -1;
 
@@ -128,7 +128,7 @@ struct Person *ReadFileInput() {
                 int value = atoi(current);
                 currentIndex = 0;
 
-                for (int k = 0; k < 500; k++) {
+                for (int k = 0; k < 100; k++) {
                     current[k] = 0;
                 }
 
@@ -304,9 +304,9 @@ double calculateModularity(struct Person *people) {
         }
     }
 
-    for (int i = 0; i < labelCount; i++) {
-        printf("Label %i: %i\n", i, labels[i]);
-    }
+    //for (int i = 0; i < labelCount; i++) {
+        //printf("Label %i: %i\n", i, labels[i]);
+    //}
 
     double res = 0;
     for (int i = 0; i < labelCount; i++) {
@@ -363,6 +363,7 @@ struct Person *bruteForceLouvain(struct Person *people, int maxCommunities) {
                 }
             }
 
+            /*
             if (iterations % 10000 == 0) {
                 for (int i = 0; i < peopleCount; i++) {
                     printf("%i, ", permutation[i]);
@@ -370,16 +371,17 @@ struct Person *bruteForceLouvain(struct Person *people, int maxCommunities) {
                 printf("\n");
                 printf("Modularity: %f\n", modularity);
             }
+             */
         }
 
         iterations++;
     }
 
-    for (int i = 0; i < peopleCount; i++) {
-        printf("%i ", optimum[i]);
-        people[i].label = optimum[i];
-    }
-    printf("\n");
+    //for (int i = 0; i < peopleCount; i++) {
+        //printf("%i ", optimum[i]);
+        //people[i].label = optimum[i];
+    //}
+    //printf("\n");
     return people;
 }
 
@@ -391,22 +393,25 @@ int **louvain(struct Person *people) {
         // Find a single community
         bool cont = true;
         int startNode = -1;
+        int maxLabel = -1;
 
         // Find the first unlabeled node
         for (int i = 0; i < peopleCount; i++) {
             if (people[i].label == -1) {
                 startNode = i;
+                printf("%f%% ###### %i/%i\n", (double) i / peopleCount * 100, i, peopleCount);
                 break;
             }
         }
 
         if (startNode == -1) {
+            // No more free nodes
             continueToFindCommunities = false;
         } else {
             people[startNode].label = label;
 
             while (cont) {
-                printf("Evaluating %s\n", people[startNode].name);
+                //printf("Evaluating %s\n", people[startNode].name);
 
                 // Current modularity score
                 double currentModularity = calculateModularity(people);
@@ -416,30 +421,36 @@ int **louvain(struct Person *people) {
                 for (int i = 0; i < people[startNode].connectionCount; i++) {
                     int optionIndex = people[startNode].connections[i];
 
-                    printf("Checking option %s\n", people[optionIndex].name);
+                    //printf("Checking option %s\n", people[optionIndex].name);
 
                     int prevLabel = people[optionIndex].label;
                     people[optionIndex].label = label;
 
                     double newModularity = calculateModularity(people);
 
-                    printf("Got a modularity score of: %f\n", newModularity);
+                    //printf("Got a modularity score of: %f\n", newModularity);
 
                     if ((newModularity - currentModularity) > maxModularityDelta) {
-                        printf("Found a new high score for modularity: %s\n", people[optionIndex].name);
+                        //printf("Found a new high score for modularity: %s\n", people[optionIndex].name);
 
                         maxModularityDelta = (newModularity - currentModularity);
                         maxIndex = optionIndex;
+                        maxLabel = people[optionIndex].label;
                     }
 
                     people[optionIndex].label = prevLabel;
                 }
 
-                if (people[maxIndex].label == label) {
-                    printf("Found an entire community, moving on to the next one now\n");
+                if (maxModularityDelta <= 0) {
+                    //printf("Found an entire community, moving on to the next one now\n");
                     cont = false;
                 } else {
-                    people[maxIndex].label = label;
+                    // Check if label is different
+                    if (people[maxIndex].label < 0) {
+                        people[maxIndex].label = label;
+                    } else {
+                        people[maxIndex].label = maxLabel;
+                    }
                     startNode = maxIndex;
                 }
             }
@@ -471,7 +482,9 @@ int **louvain(struct Person *people) {
 }
 
 int **generateClasses(int **communities) {
-    printf("Doesnt do anything yet...\n");
+    printf("Generate Classes function does not do anything yet...\n");
+
+    return NULL;
 }
 
 int main(int argumentCount, char **arguments) {
@@ -499,44 +512,7 @@ int main(int argumentCount, char **arguments) {
 
     struct Person *people = ReadFileInput();
 
-    printf("Connection Testing: %i\n", people[0].connections[0]);
-    printf("Total degree of nodes with label -1: %i\n", degreeOfNodes(people, -1));
-
-    printf("Total number of connections: %i\n", connectionCount(people, -1));
-
-    printf("Modularity of current partition arrangement: %f\n", calculateModularity(people));
-
-
-    /*
-    printf("Brute forcing...\n");
-
-    int communities = 2;
-    people = bruteForceLouvain(people, communities);
-    for (int i = 0; i < communities; i++) {
-        printf("Community: %i\n", i);
-        for (int j = 0; j < peopleCount; j++) {
-            if (people[j].label == i) {
-                printf("> %s\n", people[j].name);
-            }
-        }
-    }
-    */
-
-    printf("Locating testing: %i\n", findPersonInList(people, people[0]));
-
     int **communities = louvain(people);
-
-    /*
-    // Speed testing...
-    printf("Start of speed test\n");
-    for (int i = 0; i < 100000; i++) {
-        if (i % 10000 == 0) {
-            printf("%i\n", i);
-        }
-        calculateModularity(people);
-    }
-    printf("Complete\n");
-     */
 
     printf("Press enter to exit\n");
     char *getInputNow = malloc(sizeof(char) * 5);
